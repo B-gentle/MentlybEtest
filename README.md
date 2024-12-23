@@ -28,6 +28,7 @@ This is a Node.js-based backend API for managing projects and issues in an issue
 - **JWT** for authentication
 - **Docker** for containerization
 - **Jest** for testing
+- **Cookie-parser** for sending cookie to the client-side
 
 ---
 
@@ -37,6 +38,8 @@ This is a Node.js-based backend API for managing projects and issues in an issue
 - [Node.js](https://nodejs.org/)
 - [MongoDB](https://www.mongodb.com/)
 - [Docker](https://www.docker.com/) (optional)
+- [Jest](https://jestjs.io/docs/getting-started)
+- [Nodemon](npm i -g nodemon)
 
 ### Steps
 1. Clone the repository:
@@ -56,15 +59,15 @@ Create an .env file and add the following variables:
 
 env
 Copy code
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/issuetracker
+PORT=8000
+MONGO_URI=available_on_request
 JWT_SECRET=your_jwt_secret
 Start the development server:
 
 bash
 Copy code
-npm run dev
-Access the API at http://localhost:5000.
+node server.js
+Access the API at http://localhost:8000.
 
 ## API Endpoints
 ### User
@@ -92,137 +95,4 @@ bash
 Copy code
 npm test
 Docker Usage
-Build and run the application using Docker Compose:
-
-bash
-Copy code
-docker-compose up --build
-Access the API at http://localhost:5000.
-
-License
-This project is licensed under the MIT License. See the LICENSE file for details.
-
-yaml
-Copy code
-
----
-
-## **Docker Compose Example**
-
-**`docker-compose.yml`**
-
-```yaml
-version: '3.9'
-
-services:
-  app:
-    build: .
-    ports:
-      - "5000:5000"
-    environment:
-      - MONGO_URI=mongodb://mongo:27017/issuetracker
-      - JWT_SECRET=your_jwt_secret
-    depends_on:
-      - mongo
-
-  mongo:
-    image: mongo
-    container_name: mongo
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
-
-volumes:
-  mongo-data:
-Dockerfile
-
-dockerfile
-Copy code
-FROM node:16
-
-WORKDIR /app
-
-COPY package*.json ./
-RUN npm install
-
-COPY . .
-
-EXPOSE 5000
-
-CMD ["npm", "run", "dev"]
-Test Cases
-Unit Tests: User Registration
-
-tests/auth.test.js
-
-javascript
-Copy code
-const request = require('supertest');
-const app = require('../server');
-
-describe('Authentication API', () => {
-  it('should register a new user', async () => {
-    const res = await request(app).post('/api/auth/register').send({
-      name: 'John Doe',
-      email: 'john@example.com',
-      password: 'password123',
-      role: 'Admin',
-    });
-
-    expect(res.statusCode).toEqual(201);
-    expect(res.body).toHaveProperty('token');
-  });
-
-  it('should not register a user with missing fields', async () => {
-    const res = await request(app).post('/api/auth/register').send({
-      email: 'jane@example.com',
-    });
-
-    expect(res.statusCode).toEqual(400);
-    expect(res.body).toHaveProperty('message', 'Validation failed');
-  });
-});
-Integration Tests: Project Management
-
-tests/project.test.js
-
-javascript
-Copy code
-const request = require('supertest');
-const app = require('../server');
-
-describe('Project API', () => {
-  let token;
-
-  beforeAll(async () => {
-    const res = await request(app).post('/api/auth/login').send({
-      email: 'admin@example.com',
-      password: 'admin123',
-    });
-    token = res.body.token;
-  });
-
-  it('should create a new project', async () => {
-    const res = await request(app)
-      .post('/api/projects')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        name: 'New Project',
-        description: 'This is a new project.',
-      });
-
-    expect(res.statusCode).toEqual(201);
-    expect(res.body).toHaveProperty('name', 'New Project');
-  });
-
-  it('should not create a project without a valid token', async () => {
-    const res = await request(app).post('/api/projects').send({
-      name: 'Unauthorized Project',
-    });
-
-    expect(res.statusCode).toEqual(401);
-    expect(res.body).toHaveProperty('message', 'Not authorized, no token');
-  });
-});
-These examples provide a comprehensive structur
+Build and run the application using Docker Compose
