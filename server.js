@@ -25,6 +25,8 @@ app.use("/api/issues", issueRoutes);
 
 app.use(errorHandler);
 
+app.get("/", (req, res) => res.send('port running'))
+
 app.listen(PORT, () => {
   console.log(`App started at port ${PORT}`);
 });

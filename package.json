@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "jest",
-    "testWatch": "jest watchAll"
+    "testWatch": "jest watchAll",
+    "dev": "nodemon -L server.js"
   },
   "author": "Da_Bee",
   "license": "ISC",
